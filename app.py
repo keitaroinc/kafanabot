@@ -4,6 +4,8 @@ import json
 import kafanabot
 from flask import Flask, request, make_response, render_template
 import requests
+from foursquare import Foursquare
+import os
 
 pyBot = kafanabot.KafanaBot()
 slack = pyBot.client
@@ -24,7 +26,7 @@ def thanks():
     return render_template("thanks.html")
 
 
-@app.route("/kafana", methods=["GET", "POST"])
+@app.route("/kafana_auth", methods=["GET", "POST"])
 def hears():
     slack_event = json.loads(request.data)
 
@@ -41,6 +43,17 @@ def hears():
 
     return make_response("[NO EVENT IN SLACK REQUEST] These are not the droids\
                          you're looking for.", 404, {"X-Slack-No-Retry": 1})
+
+
+@app.route("/kafana", methods=["GET", "POST"])
+def kafana_command():
+    pyBot.post_message()
+    client = foursquare.Foursquare(client_id=os.environ.get("FOURSQUARE_CLIENT_ID"), client_secret='FOURSQUARE_CLIENT_SECRET', redirect_uri='http://fondu.com/oauth/authorize')
+    auth_uri = client.oauth.auth_url()
+    print client
+    return make_response("command", 200, {"content-type":
+                                                        "application/json"
+                                                        });
 
 
 if __name__ == '__main__':

@@ -2,6 +2,7 @@
 
 import os
 #import message
+import requests
 
 from slackclient import SlackClient
 
@@ -14,10 +15,10 @@ class KafanaBot(object):
         self.name = "kafanabot"
         self.emoji = ":robot_face:"
 
-        self.oauth = {"client_id": os.environ.get("CLIENT_ID"),
-                      "client_secret": os.environ.get("CLIENT_SECRET"),
+        self.oauth = {"client_id": os.environ.get("SLACK_CLIENT_ID"),
+                      "client_secret": os.environ.get("SLACK_CLIENT_SECRET"),
                       "scope": "bot"}
-        self.verification = os.environ.get("VERIFICATION_TOKEN")
+        self.verification = os.environ.get("SLACK_VERIFICATION_TOKEN")
 
         self.client = SlackClient("")
 
@@ -36,3 +37,7 @@ class KafanaBot(object):
                                  auth_response["bot"]["bot_access_token"]}
 
         self.client = SlackClient(authed_teams[team_id]["bot_token"])
+
+
+    def post_message(self):
+        pass
